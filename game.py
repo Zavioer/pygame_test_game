@@ -3,17 +3,23 @@ from player import Player
 
 class Game(object):
 	def __init__(self):
+		pygame.init()
+
+		# Constans 
 		self.resolution = (640, 480)
 		self.tps_max = 60.0	
 		self.delta = 0.0	
+		self.bg = pygame.image.load('pictures\\tlo.jpg')
+
+		# Window setup
+		self.screen = pygame.display.set_mode(self.resolution)
+		pygame.display.set_caption('Czulow Game')
+		self.screen.blit(self.bg, (0, 0))
+
+		self.clock = pygame.time.Clock()
 
 		self.player = Player(self)
 
-		self.screen = pygame.display.set_mode(self.resolution)
-		pygame.display.set_caption('Czulow Game')
-		self.clock = pygame.time.Clock()
-
-		pygame.init()
 		# Main loop
 		while True:
 			for event in pygame.event.get():
@@ -24,19 +30,16 @@ class Game(object):
 
 			self.delta += self.clock.tick() / 1000
 			while self.delta > 1 / self.tps_max:
+				self.tick()
 				self.delta -= 1 / self.tps_max
 
 			# Painting
-			# Backgound thigs
-			self.bg = pygame.image.load('grafiki\\tlo.jpg')
-			self.screen.blit(self.bg, (0, 0))
 			self.draw()
 			pygame.display.update()
 			pygame.time.delay(100)
-			# pygame.display.flip()
 
 	def tick(self):
-		pass
+		self.player.tick()	
 
 	def draw(self):
 		self.player.draw()
