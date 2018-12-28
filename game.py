@@ -42,6 +42,7 @@ class Game(object):
 		self.player.tick()	
 
 	def draw(self):
+		self.player.erase()
 		self.player.draw()
 
 if __name__ == "__main__":

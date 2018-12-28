@@ -5,16 +5,12 @@ class Player(object):
 	def __init__(self, game):
 		self.game = game
 		self.hp = 3
-
-		self.skin = pygame.image.load('pictures\\postac.png').convert()	
+		self.skin = pygame.image.load('pictures\\postac.png')	
 	
 		# Movement
 		self.pos = Vector2(10, 10)
 		self.vel = Vector2(0, 0)
 		self.acc = Vector2(0, 0)
-
-		self.game.screen.blit(self.skin, (self.pos.x, self.pos.y))
-	
 
 	def add_force(self, force):
 		self.acc += force	
@@ -33,11 +29,10 @@ class Player(object):
 		self.pos += self.vel
 		self.acc *= 0
 
+	def erase(self):
+		self.game.screen.blit(self.game.bg, self.skin.get_rect())
+		
 	def draw(self):
-		print(self.pos.x)
-		# buff_position = self.skin.get_rect()
-		# self.game.screen.blit(self.game.bg, buff_position, buff_position)
 		self.game.screen.blit(self.skin, (self.pos.x, self.pos.y))
-		self.game.screen.blit(self.game.bg, (self.pos.x, self.pos.y))
 
 
