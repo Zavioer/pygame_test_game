@@ -1,15 +1,18 @@
 import pygame, sys
-from player import Player
+from player import GameObject, Player, Enemy
 
 class Game(object):
 	def __init__(self):
 		pygame.init()
 
 		# Constans 
-		self.resolution = (640, 480)
+		self.WIDTH = 640
+		self.HEIGHT = 480
+		self.resolution = (self.WIDTH, self.HEIGHT)
 		self.tps_max = 60.0	
 		self.delta = 0.0	
 		self.bg = pygame.image.load('pictures\\tlo.jpg')
+		self.objects = []
 
 		# Window setup
 		self.screen = pygame.display.set_mode(self.resolution)
@@ -18,7 +21,12 @@ class Game(object):
 
 		self.clock = pygame.time.Clock()
 
+		# Game objects
 		self.player = Player(self)
+		self.player.set_image('postac.png')
+
+		self.bottle = Enemy(self)	
+		self.bottle.set_image('bottle.png')
 
 		# Main loop
 		while True:
@@ -36,14 +44,16 @@ class Game(object):
 			# Painting
 			self.draw()
 			pygame.display.update()
-			pygame.time.delay(100)
+			#pygame.time.delay(100)
 
 	def tick(self):
-		self.player.tick()	
+		self.bottle.move()
+		self.player.move()
 
 	def draw(self):
-		self.player.erase()
+		self.screen.blit(self.bg, (0, 0))
 		self.player.draw()
+		self.bottle.draw()
 
 if __name__ == "__main__":
 	Game()
