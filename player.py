@@ -20,24 +20,30 @@ class GameObject:
 class Player(GameObject):
 	def __init__(self, game):
 		self.game = game
-		self.x = 0
-		#self.y = 0
+		self.x = 10
 		self.change_x = 0
 
 	def move(self):
 		# tutaj musze zwiekszac lub zmiejszac x		
 		keypressed = pygame.key.get_pressed()
-
-		if keypressed[pygame.K_d]: 
-			self.change_x += 1
+	
+		print(pygame.event.get())
+		if self.game.WIDTH - 64 > self.x > 0:	
+			if keypressed[pygame.K_d]: 
+				self.change_x += 1
 				
-		if keypressed[pygame.K_a]: 
-			self.change_x -= 1
+			if keypressed[pygame.K_a]: 
+				self.change_x -= 1
+		else:	
+			if self.x < 0:
+				self.x = 64
+			elif self.x > self.game.WIDTH:
+				self.x = self.game.WIDTH - 64
 
-		if pygame.key.get_pressed() == pygame.KEYUP:
-			self.cahnge_x = 0
+		#if pygame.key.get_pressed() == pygame.KEYUP:
 		
 		self.x += self.change_x
+		self.cahnge_x = 0
 
 	def draw(self):
 		self.game.screen.blit(self.skin, (self.x, self.game.HEIGHT - (64 + 5)))
@@ -52,7 +58,7 @@ class Enemy(GameObject):
 		if self.y < self.game.HEIGHT / 2:
 			self.y += 10 
 
-	def draw(self):
+	def draw(self, position_x):
 		#todo erase old object 
 		
 		self.game.screen.blit(self.skin, (10, self.y))
