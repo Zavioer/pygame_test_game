@@ -23,13 +23,11 @@ class Game(object):
 		self.clock = pygame.time.Clock()
 
 		# Game objects
-		x = random.randint(1, self.WIDTH + 1)
+		self.x = random.randint(1, self.WIDTH + 1)
 		self.player = Player(self)
 		self.player.set_image('postac.png')
-		self.enemy = Enemy(self, x)
+		self.enemy = Enemy(self, self.x)
 
-		#self.bottle = Enemy(self)	
-		#self.bottle.set_image('bottle.png')
 		# Colors
 		self.black = (0, 0, 0)
 		self.white = (255, 255, 255)
@@ -53,6 +51,25 @@ class Game(object):
 				#self.random_resp()
 				self.delta -= 1 / self.tps_max
 
+			### Collisions detector
+			if self.player.y < self.enemy.e_skin_rect.y + 16:
+				print('y crossover')
+
+				if self.player.x > self.enemy.e_skin_rect.x and self.player.x < self.enemy.e_skin_rect.x + 16 or self.player.x + 32 > self.enemy.e_skin_rect.x and self.player.x + 32 < self.enemy.e_skin_rect.x + 16:
+					print('x crossover')
+			###
+
+			# End of map enemy action 
+			if self.enemy.e_skin_rect.y > self.HEIGHT:
+				self.x = random.randint(1, self.WIDTH + 1)
+				self.enemy = Enemy(self, self.x)
+				self.player.hp -= 1
+			
+			# Break loop statement	
+			if self.player.is_alive() == False:
+				self.player.hp = 3
+				break
+
 			# Painting
 			self.draw()
 			pygame.display.update()
@@ -66,7 +83,7 @@ class Game(object):
 
 	def tick(self):
 		self.player.move()
-		self.enemy.move(1)	
+		self.enemy.move(5)	
 		
 		
 	def draw(self):
@@ -76,9 +93,7 @@ class Game(object):
 
 	
 	def start_screen(self):
-		intro = True
-
-		while intro:
+		while True:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					pygame.quit()
