@@ -15,23 +15,18 @@ class Game(object):
 		self.bg = pygame.image.load('pictures\\tlo.jpg')
 		self.objects = []
 
-		# Programming of success
-		for i in range(16):
-			self.objects.append(Enemy(self)) 
-			self.objects[i].set_image('bottle.png')
-			self.objects[i].move()
-
-
 		# Window setup
 		self.screen = pygame.display.set_mode(self.resolution)
-		pygame.display.set_caption('Czulow Game')
+		pygame.display.set_caption('Złap wyborową')
 		self.screen.blit(self.bg, (0, 0))
 
 		self.clock = pygame.time.Clock()
 
 		# Game objects
+		x = random.randint(1, self.WIDTH + 1)
 		self.player = Player(self)
 		self.player.set_image('postac.png')
+		self.enemy = Enemy(self, x)
 
 		#self.bottle = Enemy(self)	
 		#self.bottle.set_image('bottle.png')
@@ -63,27 +58,22 @@ class Game(object):
 			pygame.display.update()
 			#pygame.time.delay(100)
 
-#	def random_resp(self): 
-		#while True:
+
+	def quit_game(self):
+		pygame.quit()
+		quit()
 		
-#		for i in range(16):
-#			self.objects.append(Enemy(self)) 
-#			self.objects[i].set_image('bottle.png')
-#			self.objects[i].move()
-		
+
 	def tick(self):
-		#self.bottle.move()
 		self.player.move()
-		for i in range(16):
-			self.objects[i].move()
+		self.enemy.move(1)	
 		
 		
 	def draw(self):
 		self.screen.blit(self.bg, (0, 0))
 		self.player.draw()
-		for i in range(16):
-			self.objects[i].draw(random.randint(1, 101))
-		#self.bottle.draw()
+		self.enemy.draw()	
+
 	
 	def start_screen(self):
 		intro = True
@@ -94,13 +84,20 @@ class Game(object):
 					pygame.quit()
 					quit()
 					
-
 			self.screen.fill(self.white)
+			# Load and set imaga as background
+			start_background = pygame.image.load('pictures\\menu.png')
+			self.screen.blit(start_background, (0, 0))
 
+			# Buttons setup
 			self.button(100, self.HEIGHT / 2,
 			'start_button.png',
 			'start_button_ac.png', self.main)
-		
+
+			self.button(self.WIDTH - 200, self.HEIGHT / 2,
+			'end_button.png',
+			'end_button_ac.png', self.quit_game)
+	
 			pygame.display.update()
 
 	# Buttons drawing and events loop
@@ -118,6 +115,7 @@ class Game(object):
 
 		self.screen.blit(skin, (x, y))
 		print(mouse)
+
 
 			
 

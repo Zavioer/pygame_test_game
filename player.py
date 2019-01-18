@@ -28,7 +28,7 @@ class Player(GameObject):
 		keypressed = pygame.key.get_pressed()
 	
 		print(pygame.event.get())
-		if self.game.WIDTH - 64 > self.x > 0:	
+		if self.game.WIDTH - 65 > self.x > 1:	
 			if keypressed[pygame.K_d]: 
 				self.change_x += 1
 				
@@ -49,17 +49,24 @@ class Player(GameObject):
 		self.game.screen.blit(self.skin, (self.x, self.game.HEIGHT - (64 + 5)))
 
 class Enemy(GameObject):
-	def __init__(self, game):
+	def __init__(self, game, position_x):
 		self.game = game
+		self.position_x = position_x
 		self.y = 0
 		self.change_y = 0
+		self.i = 0
+		#self.obj = pygame.draw.rect(self.game.screen, (0, 0, 255), ((self.position_x, -10), (16, 16)))	
+		self.e_skin = pygame.image.load('pictures\\bottle.png')
+		self.e_skin_rect = self.e_skin.get_rect()
+		self.e_skin_rect.x = self.position_x
 
-	def move(self):
-		if self.y < self.game.HEIGHT / 2:
-			self.y += 10 
-
-	def draw(self, position_x):
-		#todo erase old object 
-		
-		self.game.screen.blit(self.skin, (10, self.y))
+	def move(self, speed):
+		#self.i += speed
+		self.e_skin_rect.y += speed
+		#self.obj.move(self.position_x, self.i)
+		#print(self.i)
 	
+	def draw(self):
+		self.game.screen.blit(self.e_skin, self.e_skin_rect)
+
+
