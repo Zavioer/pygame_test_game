@@ -19,32 +19,21 @@ class GameObject:
 class Player(GameObject):
 	def __init__(self, game):
 		self.game = game
-		self.y = self.game.HEIGHT - (64 + 5)
+		self.y = self.game.HEIGHT - (61 + 5)
 		self.x = 10
-		self.change_x = 0
 		self.hp = 3
+		self.points = 0
 
 	def move(self):
-		# tutaj musze zwiekszac lub zmiejszac x		
+		# Keyboard input handling
 		keypressed = pygame.key.get_pressed()
-	
-		#print(pygame.event.get())
-		if self.game.WIDTH - 65 > self.x > 1:	
-			if keypressed[pygame.K_d]: 
-				self.change_x += 1
-				
-			if keypressed[pygame.K_a]: 
-				self.change_x -= 1
-		else:	
-			if self.x < 0:
-				self.x = 64
-			elif self.x > self.game.WIDTH:
-				self.x = self.game.WIDTH - 64
 
-		#if pygame.key.get_pressed() == pygame.KEYUP:
-		
-		self.x += self.change_x
-		self.cahnge_x = 0
+		if keypressed[pygame.K_d]: 
+			self.x += 5
+		if keypressed[pygame.K_a]: 
+			self.x += -5
+			
+		print('Wartosc x ' + str(self.x))
 
 	def is_alive(self):
 		if self.hp <= 0:
@@ -55,6 +44,11 @@ class Player(GameObject):
 	def draw(self):
 		self.game.screen.blit(self.skin, (self.x, self.y))
 		print(self.hp)
+
+	# I Dont know 
+	def default_valuse(self):
+		self.hp = 3
+		self.points = 0
 
 class Enemy(GameObject):
 	def __init__(self, game, position_x):

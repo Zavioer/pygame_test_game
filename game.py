@@ -25,7 +25,7 @@ class Game(object):
 		# Game objects
 		self.x = random.randint(1, self.WIDTH + 1)
 		self.player = Player(self)
-		self.player.set_image('postac.png')
+		self.player.set_image('character.png')
 		self.enemy = Enemy(self, self.x)
 
 		# Colors
@@ -48,16 +48,18 @@ class Game(object):
 			self.delta += self.clock.tick() / 1000
 			while self.delta > 1 / self.tps_max:
 				self.tick()
-				#self.random_resp()
 				self.delta -= 1 / self.tps_max
 
 			### Collisions detector
 			if self.player.y < self.enemy.e_skin_rect.y + 16:
 				print('y crossover')
 
-				if self.player.x > self.enemy.e_skin_rect.x and self.player.x < self.enemy.e_skin_rect.x + 16 or self.player.x + 32 > self.enemy.e_skin_rect.x and self.player.x + 32 < self.enemy.e_skin_rect.x + 16:
+				if self.player.x > self.enemy.e_skin_rect.x and self.player.x < self.enemy.e_skin_rect.x + 16 or self.player.x + 42 > self.enemy.e_skin_rect.x and self.player.x + 42 < self.enemy.e_skin_rect.x + 16:
 					print('x crossover')
+					self.player.points += 1
+					
 			###
+			# Score counter
 
 			# End of map enemy action 
 			if self.enemy.e_skin_rect.y > self.HEIGHT:
@@ -73,7 +75,6 @@ class Game(object):
 			# Painting
 			self.draw()
 			pygame.display.update()
-			#pygame.time.delay(100)
 
 
 	def quit_game(self):
@@ -90,12 +91,12 @@ class Game(object):
 		self.screen.blit(self.bg, (0, 0))
 		self.player.draw()
 		self.enemy.draw()	
-
+		self.print_score(self.player.points)
 	
 	def start_screen(self):
 		while True:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+			for self.event in pygame.event.get():
+				if self.event.type == pygame.QUIT:
 					pygame.quit()
 					quit()
 					
@@ -131,7 +132,10 @@ class Game(object):
 		self.screen.blit(skin, (x, y))
 		print(mouse)
 
-
+	def print_score(self, count):	
+		font = pygame.font.SysFont(None, 25)
+		text = font.render('Zebrałeś ' + str(count) + ' flaszek', True, self.black)
+		self.screen.blit(text, (0,0))
 			
 
 
