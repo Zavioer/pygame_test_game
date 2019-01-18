@@ -51,13 +51,12 @@ class Game(object):
 				self.delta -= 1 / self.tps_max
 
 			### Collisions detector
-			if self.player.y < self.enemy.e_skin_rect.y + 16:
-				print('y crossover')
-
-				if self.player.x > self.enemy.e_skin_rect.x and self.player.x < self.enemy.e_skin_rect.x + 16 or self.player.x + 42 > self.enemy.e_skin_rect.x and self.player.x + 42 < self.enemy.e_skin_rect.x + 16:
-					print('x crossover')
-					self.player.points += 1
-					
+			if self.collisions_detector(self.player.x, self.player.y,
+				self.enemy.e_skin_rect.x, self.enemy.e_skin_rect.y,
+				32, 32) == True:	
+				self.player.points += 1
+				self.x = random.randint(1, self.WIDTH + 1)
+				self.enemy = Enemy(self, self.x)
 			###
 			# Score counter
 
@@ -76,6 +75,12 @@ class Game(object):
 			self.draw()
 			pygame.display.update()
 
+	def collisions_detector(self, ply_x, ply_y, obj_x, obj_y, obj_w, obj_h):
+		if ply_y < obj_y + obj_h:
+			print('y crossover')
+			if ply_x > obj_x and ply_x < obj_x + obj_w or ply_x + 42 > obj_x and ply_x + 42 < obj_x + obj_w:
+				print('x crossover')
+				return True
 
 	def quit_game(self):
 		pygame.quit()

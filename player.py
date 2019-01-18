@@ -21,7 +21,7 @@ class Player(GameObject):
 		self.game = game
 		self.y = self.game.HEIGHT - (61 + 5)
 		self.x = 10
-		self.hp = 3
+		self.hp = 3000
 		self.points = 0
 
 	def move(self):
