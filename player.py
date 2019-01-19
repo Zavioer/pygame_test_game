@@ -20,19 +20,32 @@ class Player(GameObject):
 	def __init__(self, game):
 		self.game = game
 		self.y = self.game.HEIGHT - (61 + 5)
-		self.x = 10
-		self.hp = 3000
+		self.x = self.game.WIDTH / 2
+		self.hp = 3
 		self.points = 0
 
 	def move(self):
 		# Keyboard input handling
 		keypressed = pygame.key.get_pressed()
 
-		if keypressed[pygame.K_d]: 
-			self.x += 5
-		if keypressed[pygame.K_a]: 
-			self.x += -5
-			
+		# Boundaries
+		if 0 < self.x < self.game.WIDTH - 42:
+			if keypressed[pygame.K_d] and keypressed[pygame.K_SPACE]:
+				self.x += 15
+			if keypressed[pygame.K_a] and keypressed[pygame.K_SPACE]:
+				self.x += -15
+
+			if keypressed[pygame.K_d]: 
+				self.x += 5
+			if keypressed[pygame.K_a]: 
+				self.x += -5
+
+	
+
+		if self.x <= 0:
+			self.x = 1
+		elif self.x >= self.game.WIDTH - 42:
+			self.x = self.game.WIDTH - 43		
 		print('Wartosc x ' + str(self.x))
 
 	def is_alive(self):

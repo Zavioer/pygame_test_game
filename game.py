@@ -13,17 +13,21 @@ class Game(object):
 		self.tps_max = 60.0	
 		self.delta = 0.0	
 		self.bg = pygame.image.load('pictures\\tlo.jpg')
-		self.objects = []
 
 		# Window setup
 		self.screen = pygame.display.set_mode(self.resolution)
 		pygame.display.set_caption('Złap wyborową')
 		self.screen.blit(self.bg, (0, 0))
 
+		# Clock setup
 		self.clock = pygame.time.Clock()
 
 		# Game objects
-		self.x = random.randint(1, self.WIDTH + 1)
+		self.x = random.randint(1, self.WIDTH - 32)
+		self.difficulty = 5
+		self.difficulty_counter = 0
+		self.point_buff = 0 
+
 		self.player = Player(self)
 		self.player.set_image('character.png')
 		self.enemy = Enemy(self, self.x)
@@ -55,21 +59,31 @@ class Game(object):
 				self.enemy.e_skin_rect.x, self.enemy.e_skin_rect.y,
 				32, 32) == True:	
 				self.player.points += 1
-				self.x = random.randint(1, self.WIDTH + 1)
+				self.difficulty_counter += 1
+				self.x = random.randint(1, self.WIDTH - 32)
 				self.enemy = Enemy(self, self.x)
 			###
 			# Score counter
 
 			# End of map enemy action 
 			if self.enemy.e_skin_rect.y > self.HEIGHT:
-				self.x = random.randint(1, self.WIDTH + 1)
+				self.x = random.randint(1, self.WIDTH - 32)
 				self.enemy = Enemy(self, self.x)
 				self.player.hp -= 1
 			
 			# Break loop statement	
 			if self.player.is_alive() == False:
-				self.player.hp = 3
-				break
+				self.point_buff = self.player.points
+				self.player.default_valuse()
+				self.difficulty = 5
+				self.game_over_screen()
+
+
+			# Change difficulty
+			if self.difficulty_counter == 5:
+				self.difficulty += 1.5
+				self.difficulty_counter = 0
+				
 
 			# Painting
 			self.draw()
@@ -86,11 +100,9 @@ class Game(object):
 		pygame.quit()
 		quit()
 		
-
 	def tick(self):
 		self.player.move()
-		self.enemy.move(5)	
-		
+		self.enemy.move(self.difficulty)
 		
 	def draw(self):
 		self.screen.blit(self.bg, (0, 0))
@@ -98,6 +110,7 @@ class Game(object):
 		self.enemy.draw()	
 		self.print_score(self.player.points)
 	
+	### Scenes
 	def start_screen(self):
 		while True:
 			for self.event in pygame.event.get():
@@ -105,21 +118,43 @@ class Game(object):
 					pygame.quit()
 					quit()
 					
-			self.screen.fill(self.white)
 			# Load and set imaga as background
 			start_background = pygame.image.load('pictures\\menu.png')
 			self.screen.blit(start_background, (0, 0))
 
-			# Buttons setup
+			# START button
 			self.button(100, self.HEIGHT / 2,
 			'start_button.png',
 			'start_button_ac.png', self.main)
-
+			# EXIT button
 			self.button(self.WIDTH - 200, self.HEIGHT / 2,
 			'end_button.png',
 			'end_button_ac.png', self.quit_game)
 	
 			pygame.display.update()
+
+	def game_over_screen(self):
+		while True:
+			for self.event in pygame.event.get():
+				if self.event.type == pygame.QUIT:
+					pygame.quit()
+					quit()
+					
+			# Load and set imaga as background
+			start_background = pygame.image.load('pictures\\game_over.png')
+			self.screen.blit(start_background, (0, 0))
+
+			# RESET button
+			self.button(self.WIDTH / 2 - 50, self.HEIGHT / 2 + 10,
+			'reset_button.png',
+			'reset_button_ac.png', self.start_screen)
+
+			font = pygame.font.SysFont(None, 30)
+			text = font.render('Udało Ci się zebrać ' + str(self.point_buff) + ' flaszek na libacje u Matiego!', True, (0, 255, 0))
+			self.screen.blit(text, (80, self.HEIGHT / 2 + 80))	
+
+			pygame.display.update()
+	###
 
 	# Buttons drawing and events loop
 	def button(self, x, y, image, active_img, action=None):	
@@ -135,14 +170,13 @@ class Game(object):
 			skin = pygame.image.load('pictures\\' + image)
 
 		self.screen.blit(skin, (x, y))
-		print(mouse)
 
 	def print_score(self, count):	
-		font = pygame.font.SysFont(None, 25)
+		font = pygame.font.SysFont(None, 30)
 		text = font.render('Zebrałeś ' + str(count) + ' flaszek', True, self.black)
-		self.screen.blit(text, (0,0))
-			
 
+		self.screen.blit(text, (0, 0))
+			
 
 if __name__ == "__main__":
 	Game()
