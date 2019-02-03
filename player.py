@@ -1,5 +1,4 @@
 import pygame
-from pygame.math import Vector2
 
 class GameObject:
 	def __init__(self, game):
@@ -40,13 +39,10 @@ class Player(GameObject):
 			if keypressed[pygame.K_a]: 
 				self.x += -5
 
-	
-
 		if self.x <= 0:
 			self.x = 1
 		elif self.x >= self.game.WIDTH - 42:
 			self.x = self.game.WIDTH - 43		
-		print('Wartosc x ' + str(self.x))
 
 	def is_alive(self):
 		if self.hp <= 0:

@@ -1,0 +1,10 @@
+This is my simple project game. Created for learn pyGame module and Python.
+
+
+HOW TO PLAY?
+-> Navigation:
+	a - left side
+	d - right side
+	a or b + space - fast move 
+
+You start with 3 lives, and your mission is to collect as many bottles as you can. Good Luck! :) 

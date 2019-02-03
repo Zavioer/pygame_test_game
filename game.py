@@ -12,11 +12,11 @@ class Game(object):
 		self.resolution = (self.WIDTH, self.HEIGHT)
 		self.tps_max = 60.0	
 		self.delta = 0.0	
-		self.bg = pygame.image.load('pictures\\tlo.jpg')
+		self.bg = pygame.image.load('pictures\\background.png')
 
 		# Window setup
 		self.screen = pygame.display.set_mode(self.resolution)
-		pygame.display.set_caption('Złap wyborową')
+		pygame.display.set_caption('Catch a Bottle!')
 		self.screen.blit(self.bg, (0, 0))
 
 		# Clock setup
@@ -91,9 +91,7 @@ class Game(object):
 
 	def collisions_detector(self, ply_x, ply_y, obj_x, obj_y, obj_w, obj_h):
 		if ply_y < obj_y + obj_h:
-			print('y crossover')
 			if ply_x > obj_x and ply_x < obj_x + obj_w or ply_x + 42 > obj_x and ply_x + 42 < obj_x + obj_w:
-				print('x crossover')
 				return True
 
 	def quit_game(self):
@@ -109,6 +107,7 @@ class Game(object):
 		self.player.draw()
 		self.enemy.draw()	
 		self.print_score(self.player.points)
+		self.print_lives(self.player.hp)
 	
 	### Scenes
 	def start_screen(self):
@@ -150,7 +149,7 @@ class Game(object):
 			'reset_button_ac.png', self.start_screen)
 
 			font = pygame.font.SysFont(None, 30)
-			text = font.render('Udało Ci się zebrać ' + str(self.point_buff) + ' flaszek na libacje u Matiego!', True, (0, 255, 0))
+			text = font.render('Your finale score is ' + str(self.point_buff) + ' bottles!', True, (0, 255, 0))
 			self.screen.blit(text, (80, self.HEIGHT / 2 + 80))	
 
 			pygame.display.update()
@@ -173,10 +172,15 @@ class Game(object):
 
 	def print_score(self, count):	
 		font = pygame.font.SysFont(None, 30)
-		text = font.render('Zebrałeś ' + str(count) + ' flaszek', True, self.black)
+		text = font.render('You caught ' + str(count) + ' bottles!', True, self.white)
 
 		self.screen.blit(text, (0, 0))
 			
+	def print_lives(self, count):	
+		font = pygame.font.SysFont(None, 30)
+		text = font.render('Lives: ' + str(count), True, self.white)
+
+		self.screen.blit(text, (0, 31))
 
 if __name__ == "__main__":
 	Game()
