@@ -21,6 +21,10 @@ class Game(object):
 
 		# Clock setup
 		self.clock = pygame.time.Clock()
+		
+		# Sounds setup
+		self.catch_sound = pygame.mixer.Sound('sounds\catch.wav')
+		self.game_over_sound = pygame.mixer.Sound('sounds\gameover.wav')
 
 		# Game objects
 		self.x = random.randint(1, self.WIDTH - 32)
@@ -92,6 +96,7 @@ class Game(object):
 	def collisions_detector(self, ply_x, ply_y, obj_x, obj_y, obj_w, obj_h):
 		if ply_y < obj_y + obj_h:
 			if ply_x > obj_x and ply_x < obj_x + obj_w or ply_x + 42 > obj_x and ply_x + 42 < obj_x + obj_w:
+				pygame.mixer.Sound.play(self.catch_sound)
 				return True
 
 	def quit_game(self):
@@ -133,6 +138,9 @@ class Game(object):
 			pygame.display.update()
 
 	def game_over_screen(self):
+		pygame.mixer.music.stop()
+		pygame.mixer.Sound.play(self.game_over_sound)
+
 		while True:
 			for self.event in pygame.event.get():
 				if self.event.type == pygame.QUIT:

@@ -1,5 +1,7 @@
 This is my simple project game. Created for learn pyGame module and Python.
-
+You will need pygame module to play.
+To start the game just type in console: python game.py. 
+I used python 3.6.5 version to inperpret this code.
 
 HOW TO PLAY?
 -> Navigation:
