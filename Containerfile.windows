@@ -1,0 +1,55 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV WINEDEBUG=-all
+
+# Install Wine, unzip, and dependencies
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        wine wine64 wine32 \
+        wget ca-certificates unzip \
+        xvfb \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Initialize Wine prefix
+RUN wineboot --init 2>/dev/null && \
+    while pgrep wineserver > /dev/null; do sleep 1; done
+
+# Download Python embeddable package (no installer needed)
+ENV PYTHON_VERSION=3.11.9
+ENV PYDIR=/root/.wine/drive_c/Python311
+RUN mkdir -p "${PYDIR}" && \
+    wget -q "https://www.python.org/ftp/python/${PYTHON_VERSION}/python-${PYTHON_VERSION}-embed-amd64.zip" \
+        -O /tmp/python.zip && \
+    unzip -q /tmp/python.zip -d "${PYDIR}" && \
+    rm /tmp/python.zip
+
+# Enable site-packages by uncommenting import site in python311._pth
+RUN sed -i 's/^#import site/import site/' "${PYDIR}/python311._pth"
+
+# Create winepython wrapper
+RUN echo '#!/bin/sh' > /usr/local/bin/winepython && \
+    echo "exec wine \"${PYDIR}/python.exe\" \"\$@\"" >> /usr/local/bin/winepython && \
+    chmod +x /usr/local/bin/winepython
+
+# Bootstrap pip via get-pip.py
+RUN wget -q "https://bootstrap.pypa.io/get-pip.py" -O /tmp/get-pip.py && \
+    xvfb-run winepython /tmp/get-pip.py 2>/dev/null && \
+    while pgrep wineserver > /dev/null; do sleep 1; done && \
+    rm /tmp/get-pip.py
+
+# Install Python dependencies
+RUN xvfb-run winepython -m pip install pygame pyinstaller 2>/dev/null && \
+    while pgrep wineserver > /dev/null; do sleep 1; done
+
+WORKDIR /src
+
+# Set display for Wine (Xvfb will provide it)
+ENV DISPLAY=:99
+
+# Build entrypoint: start Xvfb in background, then run PyInstaller directly
+RUN printf '#!/bin/sh\nset -e\nXvfb :99 -screen 0 1024x768x16 &\nsleep 1\necho "[build] Starting PyInstaller via Wine..."\nwine "'"${PYDIR}"'/python.exe" -u -m PyInstaller "$@"\nRET=$?\necho "[build] PyInstaller finished with exit code $RET"\nexit $RET\n' > /usr/local/bin/build-exe && \
+    chmod +x /usr/local/bin/build-exe
+
+ENTRYPOINT ["build-exe"]

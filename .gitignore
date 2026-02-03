@@ -1,2 +1,12 @@
 __pycache__
 .gitignore
+
+# PyInstaller build output
+dist/
+build/
+
+# Virtual environment
+.venv/
+
+# IDE
+.idea/
