@@ -1,6 +1,9 @@
+import os
 import pygame, sys
 import random
 from player import GameObject, Player, Enemy
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Game(object):
 	def __init__(self):
@@ -12,7 +15,7 @@ class Game(object):
 		self.resolution = (self.WIDTH, self.HEIGHT)
 		self.tps_max = 60.0	
 		self.delta = 0.0	
-		self.bg = pygame.image.load('pictures\\background.png')
+		self.bg = pygame.image.load(os.path.join(BASE_DIR, 'pictures', 'background.png'))
 
 		# Window setup
 		self.screen = pygame.display.set_mode(self.resolution)
@@ -23,8 +26,8 @@ class Game(object):
 		self.clock = pygame.time.Clock()
 		
 		# Sounds setup
-		self.catch_sound = pygame.mixer.Sound('sounds\catch.wav')
-		self.game_over_sound = pygame.mixer.Sound('sounds\gameover.wav')
+		self.catch_sound = pygame.mixer.Sound(os.path.join(BASE_DIR, 'sounds', 'catch.wav'))
+		self.game_over_sound = pygame.mixer.Sound(os.path.join(BASE_DIR, 'sounds', 'gameover.wav'))
 
 		# Game objects
 		self.x = random.randint(1, self.WIDTH - 32)
@@ -123,7 +126,7 @@ class Game(object):
 					quit()
 					
 			# Load and set imaga as background
-			start_background = pygame.image.load('pictures\\menu.png')
+			start_background = pygame.image.load(os.path.join(BASE_DIR, 'pictures', 'menu.png'))
 			self.screen.blit(start_background, (0, 0))
 
 			# START button
@@ -148,7 +151,7 @@ class Game(object):
 					quit()
 					
 			# Load and set imaga as background
-			start_background = pygame.image.load('pictures\\game_over.png')
+			start_background = pygame.image.load(os.path.join(BASE_DIR, 'pictures', 'game_over.png'))
 			self.screen.blit(start_background, (0, 0))
 
 			# RESET button
@@ -169,12 +172,12 @@ class Game(object):
 		click = pygame.mouse.get_pressed()
 		 
 		if (x + 100) > mouse[0] > x and (y + 50) > mouse[1] > y:
-			skin = pygame.image.load('pictures\\' + active_img)
-			
-			if click[0] == 1 and action != None: 
-				action()	
+			skin = pygame.image.load(os.path.join(BASE_DIR, 'pictures', active_img))
+
+			if click[0] == 1 and action != None:
+				action()
 		else:
-			skin = pygame.image.load('pictures\\' + image)
+			skin = pygame.image.load(os.path.join(BASE_DIR, 'pictures', image))
 
 		self.screen.blit(skin, (x, y))
 

@@ -1,4 +1,7 @@
+import os
 import pygame
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class GameObject:
 	def __init__(self, game):
@@ -7,7 +10,7 @@ class GameObject:
 		self.name = ''
 
 	def set_image(self, image_name):
-		self.skin = pygame.image.load('pictures\\' + image_name)	
+		self.skin = pygame.image.load(os.path.join(BASE_DIR, 'pictures', image_name))
 	
 	def set_name(self, object_name):
 		self.name = object_name
@@ -63,7 +66,7 @@ class Enemy(GameObject):
 	def __init__(self, game, position_x):
 		self.game = game
 		self.position_x = position_x
-		self.e_skin = pygame.image.load('pictures\\bottle.png')
+		self.e_skin = pygame.image.load(os.path.join(BASE_DIR, 'pictures', 'bottle.png'))
 		self.e_skin_rect = self.e_skin.get_rect()
 		self.e_skin_rect.x = self.position_x
 
